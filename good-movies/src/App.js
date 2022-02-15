@@ -1,10 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Modal, Button, Form, Card, Row, Col } from "react-bootstrap";
+import React, { useState, useRef } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes as Switch,
+} from "react-router-dom";
+import { Modal, Button, Form, Card } from "react-bootstrap";
 
 import Layout from "./components/Layout";
 import NavigationBar from "./components/NavigationBar";
-import { login } from "./lib/login";
+import { login } from "./lib/database";
+import ToastAlert from "./components/toastAlert";
+
+import Home from "./pages/home";
 
 import loginLogo from "./assets/loginlogo.jpg";
 
@@ -12,14 +19,13 @@ function App() {
   // verify authentication
   const [isConnected, setIsConnected] = useState(false);
   const [userId, setUserId] = useState(null);
-  // signUp model visibility state
-  const [showSignUp, setShowSignUp] = useState(false);
   // login modal visibility state
   const [show, setShow] = useState(false);
+  // toast
+  const [showAlert, setShowAlert] = useState(false);
+  const [titleAlert, setTitleAlert] = useState("Titulo");
+  const [messageAlert, setMessageAlert] = useState("Mensaje de alerta");
 
-  // signup modal visibility functions
-  const handleSignUpClose = () => setShowSignUp(false);
-  const handleSignUpShow = () => setShowSignUp(true);
   // login modal visibility functions
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -36,27 +42,59 @@ function App() {
     }).then((result) => {
       if (result.access) {
         setUserId(result.access);
-        console.log("login success!");
         setIsConnected(true);
+        setShowAlert(true);
+        setTitleAlert("Login exitoso.");
+        setMessageAlert("");
       } else {
         //handle erros
-        if (result.detail) console.log(result.detail);
-        if (result.username) console.log(result.username);
-        if (result.password) console.log(result.password);
+        setShowAlert(true);
+        setTitleAlert("Error de autenticacion.");
+        if (result.detail) {
+          setMessageAlert(result.detail);
+        }
+        if (result.username && result.password === undefined) {
+          setMessageAlert(`USUARIO: ${result.username[0]}`);
+        }
+        if (result.password && result.username === undefined) {
+          setMessageAlert(`CONTRASEÑA: ${result.password[0]}`);
+        }
+        if (result.username && result.password) {
+          setMessageAlert(
+            `USUARIO: ${result.username[0]} CONTRASEÑA: ${result.password[0]}`
+          );
+        }
       }
     });
+  };
+  // logout
+  const handleLogout = () => {
+    setIsConnected(false);
   };
 
   return (
     <>
       <Layout>
+        <ToastAlert
+          setShowAlert={setShowAlert}
+          show={showAlert}
+          title={titleAlert}
+          message={messageAlert}
+        />
         <Router>
           <NavigationBar
             isConnected={isConnected}
             openModal={handleShow}
-            openSignUp={handleSignUpShow}
+            onLogout={handleLogout}
             userId={userId}
           />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              element={<Home userId={userId} isConnected={isConnected} />}
+            />
+          </Switch>
         </Router>
         {/* Modal para login */}
         <Modal show={show} onHide={handleClose}>

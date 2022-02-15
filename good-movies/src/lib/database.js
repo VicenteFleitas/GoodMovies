@@ -24,3 +24,18 @@ export function login(props) {
   });
   return result;
 }
+
+export function getPeliculas() {
+  let result = new Promise((resolve) => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch("http://movies.z4.tdplab.com/api/pelicula/", requestOptions)
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}

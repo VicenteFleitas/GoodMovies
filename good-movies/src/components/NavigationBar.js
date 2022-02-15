@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Nav, Navbar, Button } from "react-bootstrap";
 import styled from "styled-components";
@@ -23,7 +23,7 @@ function NavigationBar(props) {
           <Nav className="ml-auto">
             {props.isConnected ? (
               <>
-                <Nav.Item>
+                <Nav.Item style={{ alignSelf: "center" }}>
                   <h4 className="text-secondary mr-5 mt-2">
                     Todas Las Mejores Peliculas
                   </h4>
