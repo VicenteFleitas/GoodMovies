@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -8,10 +8,11 @@ import { Modal, Button, Form, Card } from "react-bootstrap";
 
 import Layout from "./components/Layout";
 import NavigationBar from "./components/NavigationBar";
-import { login } from "./lib/database";
+import { login, getPeliculas } from "./lib/database";
 import ToastAlert from "./components/toastAlert";
 
 import Home from "./pages/home";
+import Movie from "./pages/movie";
 
 import loginLogo from "./assets/loginlogo.jpg";
 
@@ -25,6 +26,8 @@ function App() {
   const [showAlert, setShowAlert] = useState(false);
   const [titleAlert, setTitleAlert] = useState("Titulo");
   const [messageAlert, setMessageAlert] = useState("Mensaje de alerta");
+  // peliculas
+  const [cards, setCards] = useState([]);
 
   // login modal visibility functions
   const handleClose = () => setShow(false);
@@ -71,6 +74,13 @@ function App() {
   const handleLogout = () => {
     setIsConnected(false);
   };
+  // get peliculas
+  useEffect(() => {
+    getPeliculas().then((result) => {
+      console.log(result);
+      setCards(result);
+    });
+  }, []);
 
   return (
     <>
@@ -92,8 +102,11 @@ function App() {
             <Route
               exact
               path="/"
-              element={<Home userId={userId} isConnected={isConnected} />}
+              element={
+                <Home cards={cards} userId={userId} isConnected={isConnected} />
+              }
             />
+            <Route path="/movieview/:movieId" element={<Movie />} />
           </Switch>
         </Router>
         {/* Modal para login */}

@@ -39,3 +39,36 @@ export function getPeliculas() {
   });
   return result;
 }
+
+export function getPeliculaById(id) {
+  let result = new Promise((resolve) => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(`http://movies.z4.tdplab.com/api/pelicula/${id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}
+
+export function getCriticsById(id) {
+  let result = new Promise((resolve) => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://movies.z4.tdplab.com/api/pelicula/${id}/criticas`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}
