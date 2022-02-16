@@ -33,11 +33,13 @@ function App() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   // login modal form ref
+  const [myName, setMyName] = useState(null);
   const emailRef = useRef();
   const passwordRef = useRef();
 
   // login
   const handleLogin = () => {
+    setMyName(emailRef.current.value);
     handleClose();
     login({
       email: emailRef.current.value,
@@ -49,6 +51,7 @@ function App() {
         setShowAlert(true);
         setTitleAlert("Login exitoso.");
         setMessageAlert("");
+        //setMyName(emailRef.current.value);
       } else {
         //handle erros
         setShowAlert(true);
@@ -106,7 +109,10 @@ function App() {
                 <Home cards={cards} userId={userId} isConnected={isConnected} />
               }
             />
-            <Route path="/movieview/:movieId" element={<Movie />} />
+            <Route
+              path="/movieview/:movieId"
+              element={<Movie token={userId} myName={myName} />}
+            />
           </Switch>
         </Router>
         {/* Modal para login */}

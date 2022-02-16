@@ -72,3 +72,73 @@ export function getCriticsById(id) {
   });
   return result;
 }
+
+export function getComentsById(id, token) {
+  let result = new Promise((resolve) => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://movies.z4.tdplab.com/api/pelicula/${id}/comentarios`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}
+
+export function postComents(coment) {
+  let result = new Promise((resolve) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    console.log(coment);
+    var raw = JSON.stringify(coment);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://movies.z4.tdplab.com/api/pelicula/${coment.pelicula}/comentarios`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}
+
+export function deleteComment(movieId, commentId, token) {
+  let result = new Promise((resolve) => {
+    var myHeaders = new Headers();
+    myHeaders.append("X-CSRFToken", token);
+
+    var raw = "";
+
+    var requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://movies.z4.tdplab.com/api/pelicula/${movieId}/comentarios/${commentId}/`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => resolve(result))
+      .catch((error) => console.log("error", error));
+  });
+  return result;
+}
