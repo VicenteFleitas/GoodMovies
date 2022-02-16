@@ -93,24 +93,18 @@ export function getComentsById(id, token) {
   return result;
 }
 
-export function postComents(coment) {
+export function postComents(coment, token) {
   let result = new Promise((resolve) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    console.log(coment);
-    var raw = JSON.stringify(coment);
-
-    var requestOptions = {
+    let requestOptions = {
       method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": token,
+      },
+      body: JSON.stringify(coment),
     };
 
-    fetch(
-      `http://movies.z4.tdplab.com/api/pelicula/${coment.pelicula}/comentarios`,
-      requestOptions
-    )
+    fetch(`http://movies.z4.tdplab.com/api/comentario/`, requestOptions)
       .then((response) => response.json())
       .then((result) => resolve(result))
       .catch((error) => console.log("error", error));

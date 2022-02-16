@@ -36,13 +36,18 @@ function Movie(props) {
   const commentRef = useRef();
   const scoreRef = useRef();
   function addComment() {
-    postComents({
-      calificacion: parseInt(scoreRef.current.value),
-      mensaje: commentRef.current.value,
-      pelicula: parseInt(movieId),
-    }).then((result) => {
+    postComents(
+      {
+        calificacion: parseInt(scoreRef.current.value),
+        mensaje: commentRef.current.value,
+        pelicula: parseInt(movieId),
+      },
+      props.token
+    ).then((result) => {
       console.log("Comment added: ", result);
-      setComents([...coments, result]);
+      if (result.usuario) {
+        setComents([...coments, result]);
+      }
     });
   }
   function handleDeleteComment(commentId) {
